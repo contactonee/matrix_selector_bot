@@ -1,9 +1,9 @@
-FROM condaforge/miniforge3
+FROM continuumio/miniconda3
 
-ARG token
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
 COPY app app
-
-conda create --name telegram_bot --file requirements.txt
-
 WORKDIR app
-ENTRYPOINT python main.py --token $token
+
+ENTRYPOINT python main.py --token ${BOT_TOKEN}
