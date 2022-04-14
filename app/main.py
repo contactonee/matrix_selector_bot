@@ -1,5 +1,5 @@
-import argparse
 import logging
+import os
 
 from telegram.ext import (CommandHandler, ConversationHandler, Filters,
                           MessageHandler, PicklePersistence, Updater)
@@ -7,6 +7,7 @@ from telegram.ext import (CommandHandler, ConversationHandler, Filters,
 import stages
 
 logging.basicConfig(
+    filename=os.getenv('BOT_LOG_FILE'),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
@@ -14,28 +15,17 @@ logger = logging.getLogger('MAIN')
 logger.setLevel(logging.DEBUG)
 
 
-def parse_args():
-
-    logger.debug('Parse args')
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('--token', action='store', required=True)
-
-    args = parser.parse_args()
-
-    return args
-
 
 def main():
 
     logger.debug('Program start')
 
-    args = parse_args()
+    try:
+        persistance = PicklePersistence(os.getenv('BOT_PICKLE_PERSISTANCE'))
+    except:
+        persistance = None
 
-    persistance = PicklePersistence('data.pkl')
-
-    updater = Updater(token=args.token,
+    updater = Updater(token=os.getenv('BOT_TOKEN'),
                       persistence=persistance,
                       use_context=True)
 
